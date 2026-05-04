@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: rhaiis-vllm
+  namespace: rhaiis
+  labels:
+    app: rhaiis-vllm
+spec:
+  to:
+    kind: Service
+    name: rhaiis-vllm
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

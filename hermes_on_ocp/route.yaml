@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: hermes
+  namespace: hermes
+  labels:
+    app: hermes
+spec:
+  to:
+    kind: Service
+    name: hermes
+  port:
+    targetPort: api
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

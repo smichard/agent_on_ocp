@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rhaiis-vllm
+  namespace: rhaiis
+  labels:
+    app: rhaiis-vllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rhaiis-vllm
+  template:
+    metadata:
+      labels:
+        app: rhaiis-vllm
+    spec:
+      tolerations:
+        - key: nvidia.com/gpu
+          effect: NoSchedule
+          operator: Exists
+      serviceAccountName: default
+      volumes:
+        - name: model-cache
+          persistentVolumeClaim:
+            claimName: model-cache
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: "16Gi"
+      containers:
+        - name: vllm
+          image: registry.redhat.io/rhaiis/vllm-cuda-rhel9:latest
+          imagePullPolicy: Always
+          env:
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hf-secret
+                  key: HF_TOKEN
+            - name: VLLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vllm-api-key-secret
+                  key: VLLM_API_KEY
+            - name: MODEL_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: vllm-config
+                  key: MODEL_NAME
+            - name: HF_HOME
+              value: /cache
+            - name: HF_HUB_OFFLINE
+              value: '0'
+            - name: VLLM_ALLOW_LONG_MAX_MODEL_LEN
+              value: '1'
+          command:
+            - python
+            - '-m'
+            - vllm.entrypoints.openai.api_server
+          args:
+            - '--port=8000'
+            - '--model=$(MODEL_NAME)'
+            - '--served-model-name=$(MODEL_NAME)'
+            - '--tensor-parallel-size=4'
+            - '--gpu-memory-utilization=0.85'
+            - '--max-model-len=65536'
+            - '--enable-auto-tool-choice'
+            - '--tool-call-parser=hermes'
+          resources:
+            limits:
+              cpu: '10'
+              nvidia.com/gpu: '4'
+              memory: 128Gi
+            requests:
+              cpu: '2'
+              memory: 32Gi
+              nvidia.com/gpu: '4'
+          volumeMounts:
+            - name: model-cache
+              mountPath: /cache
+            - name: shm
+              mountPath: /dev/shm
+      restartPolicy: Always

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-config
+  namespace: hermes
+  labels:
+    app: hermes
+data:
+  config.yaml: |
+    model:
+      provider: "custom"
+      base_url: "http://rhaiis-vllm.rhaiis.svc.cluster.local:8000/v1"
+      default: "Qwen/Qwen3-Coder-30B-A3B-Instruct"
+
+    fallback_model:
+      provider: "openrouter"
+      model: "anthropic/claude-sonnet-4-6"
+
+    terminal:
+      backend: "local"
+      cwd: "/opt/data/workspace"
+      timeout: 180
+      lifetime_seconds: 300
+
+    compression:
+      enabled: true
+      threshold: 0.50
+      target_ratio: 0.20
+      protect_last_n: 20
