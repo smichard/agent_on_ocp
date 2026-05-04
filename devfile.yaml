@@ -18,12 +18,12 @@ commands:
   - id: copyconfig
     exec:
       component: udi
-      commandLine: "mkdir /home/user/.continue && cp /projects/agent-on-ocp/continue-config.yaml /home/user/.continue/config.yaml"
+      commandLine: "mkdir -p /home/user/.continue && cp /projects/agent-on-ocp/continue-config.yaml /home/user/.continue/config.yaml"
   - id: copykey
     exec:
       component: udi
       commandLine: |
-        oc get secret vllm-api-key-secret -n rhaiis -o jsonpath='{.data.VLLM_API_KEY}' | base64 -d | awk '{print "RHAIIS_API_KEY="$0}' > .continue/.env
+        oc get secret vllm-api-key-secret -n rhaiis -o jsonpath='{.data.VLLM_API_KEY}' | base64 -d | awk '{print "RHAIIS_API_KEY="$0}' > /home/user/.continue/.env
 events:
   postStart:
     - copyconfig
