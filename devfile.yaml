@@ -22,7 +22,8 @@ commands:
   - id: copykey
     exec:
       component: udi
-      commandLine: "oc get secret vllm-api-key-secret -n rhaiis -o jsonpath='{.data.VLLM_API_KEY}' | base64 -d | awk '{print "RHAIIS_API_KEY="$0}' > .continue/.env"
+      commandLine: |
+        oc get secret vllm-api-key-secret -n rhaiis -o jsonpath='{.data.VLLM_API_KEY}' | base64 -d | awk '{print "RHAIIS_API_KEY="$0}' > .continue/.env
 events:
   postStart:
     - copyconfig
