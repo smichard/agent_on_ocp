@@ -15,16 +15,16 @@ components:
     mountSources: true
     sourceMapping: /projects
 commands:
-  - id: copyconfig
-    exec:
-      component: udi
-      commandLine: "mkdir -p /home/user/.continue && cp /projects/agent-on-ocp/continue-config.yaml /home/user/.continue/config.yaml"
-  - id: copykey
-    exec:
-      component: udi
-      commandLine: |
-        mkdir -p .continue && oc get secret vllm-api-key-secret -n rhaiis -o jsonpath='{.data.VLLM_API_KEY}' | base64 -d | awk '{print "RHAIIS_API_KEY="$0}' > .continue/.env
+  - id: setup-continue
+      exec:
+        component: udi
+        commandLine: |
+          set -eu
+          mkdir -p /home/user/.continue
+          cp /projects/agent-on-ocp/continue-config.yaml /home/user/.continue/config.yaml
+          RHAIIS_API_KEY="$(oc get secret vllm-api-key-secret -n rhaiis -o jsonpath='{.data.VLLM_API_KEY}' | base64 -d)"
+          printf "RHAIIS_API_KEY=%s\n" "$RHAIIS_API_KEY" > /home/user/.continue/.env
+          chmod 600 /home/user/.continue/.env
 events:
   postStart:
-    - copyconfig
-    - copykey
+    - setup-continue
