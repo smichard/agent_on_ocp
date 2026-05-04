@@ -23,7 +23,7 @@ commands:
     exec:
       component: udi
       commandLine: |
-        mkdir -p .continue && oc get secret vllm-api-key-secret -n rhaiis -o jsonpath='{.data.VLLM_API_KEY}' | base64 -d | awk '{print "RHAIIS_API_KEY="$0}' > /home/user/.continue/.env
+        mkdir -p .continue && oc get secret vllm-api-key-secret -n rhaiis -o jsonpath='{.data.VLLM_API_KEY}' | base64 -d | awk '{print "RHAIIS_API_KEY="$0}' > .continue/.env
 events:
   postStart:
     - copyconfig
