@@ -7,7 +7,7 @@ models:
     provider: openai
     model: Qwen/Qwen3-Coder-30B-A3B-Instruct
     apiBase: http://rhaiis-vllm.rhaiis.svc.cluster.local:8000/v1
-    apiKey: ${VLLM_API_KEY:-EMPTY}
+    apiKey: ${{ secrets.RHAIIS_API_KEY }}
     roles:
       - chat
       - edit
@@ -23,7 +23,7 @@ models:
     provider: openai
     model: Qwen/Qwen3-Coder-30B-A3B-Instruct
     apiBase: http://rhaiis-vllm.rhaiis.svc.cluster.local:8000/v1
-    apiKey: ${VLLM_API_KEY:-EMPTY}
+    apiKey: ${{ secrets.RHAIIS_API_KEY }}
     roles:
       - autocomplete
     autocompleteOptions:
