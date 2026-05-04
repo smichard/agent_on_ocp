@@ -1,0 +1,108 @@
+name: Agent on OCP
+version: 0.1.0
+schema: v1
+
+models:
+  - name: Qwen3 Coder 30B
+    provider: openai
+    model: Qwen/Qwen3-Coder-30B-A3B-Instruct
+    apiBase: http://rhaiis-vllm.rhaiis.svc.cluster.local:8000/v1
+    apiKey: ${VLLM_API_KEY:-EMPTY}
+    roles:
+      - chat
+      - edit
+      - apply
+      - summarize
+    capabilities:
+      - tool_use
+    defaultCompletionOptions:
+      temperature: 0.2
+      maxTokens: 4096
+
+  - name: Qwen3 Coder 30B Autocomplete
+    provider: openai
+    model: Qwen/Qwen3-Coder-30B-A3B-Instruct
+    apiBase: http://rhaiis-vllm.rhaiis.svc.cluster.local:8000/v1
+    apiKey: ${VLLM_API_KEY:-EMPTY}
+    roles:
+      - autocomplete
+    autocompleteOptions:
+      debounceDelay: 300
+      maxPromptTokens: 1024
+      onlyMyCode: true
+      useRecentlyEdited: true
+      useRecentlyOpened: true
+    defaultCompletionOptions:
+      temperature: 0.1
+      maxTokens: 512
+
+  - name: Local Embeddings
+    provider: transformers.js
+    model: all-MiniLM-L6-v2
+    roles:
+      - embed
+
+context:
+  - provider: file
+  - provider: currentFile
+  - provider: code
+  - provider: diff
+  - provider: open
+  - provider: terminal
+  - provider: problems
+  - provider: tree
+  - provider: repo-map
+    params:
+      includeSignatures: true
+  - provider: os
+
+prompts:
+  - name: test
+    description: Write unit tests for highlighted code
+    prompt: |
+      Write a comprehensive set of unit tests for the selected code.
+      Include setup, teardown, correctness tests, and important edge cases.
+      Return the tests as chat output only. Do not edit files.
+
+  - name: oc-review
+    description: Review OpenShift manifests for correctness and security
+    prompt: |
+      Review the selected OpenShift or Kubernetes YAML.
+      Check namespace usage, routes, services, probes, resources, secrets, image references,
+      security context constraints, GPU scheduling, and operational risks.
+      Return concrete findings and corrected YAML snippets where useful.
+
+  - name: explain-deploy
+    description: Explain deployment workflow
+    prompt: |
+      Explain the selected deployment workflow step by step.
+      Focus on prerequisites, OpenShift resources created, dependencies, failure modes,
+      and validation commands.
+
+  - name: security-scan
+    description: Scan code or manifests for security issues
+    prompt: |
+      Analyze the selected content for security issues.
+      Focus on secrets exposure, insecure defaults, container security, network exposure,
+      dependency risks, and OpenShift-specific hardening.
+      Provide concrete remediation steps.
+
+rules:
+  - Be concise and implementation-oriented.
+  - Prefer OpenShift CLI examples using `oc`.
+  - Never suggest storing API keys, tokens, or secrets directly in manifests or config files.
+  - For Kubernetes or OpenShift YAML, check resource limits, probes, namespaces, routes, services, security context, and Security Context Constraints.
+  - Assume this repository targets a self-hosted AI stack on OpenShift with vLLM-backed OpenAI-compatible inference.
+  - Always consider GPU resource efficiency when suggesting model usage or deployment changes.
+
+docs:
+  - name: Continue
+    startUrl: https://docs.continue.dev/
+  - name: OpenShift
+    startUrl: https://docs.redhat.com/en/documentation/openshift_container_platform/
+  - name: Red Hat AI Inference Server
+    startUrl: https://docs.redhat.com/en/documentation/red_hat_ai_inference_server/
+  - name: vLLM
+    startUrl: https://docs.vllm.ai/
+  - name: Open WebUI
+    startUrl: https://docs.openwebui.com/
