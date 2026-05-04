@@ -18,7 +18,7 @@ commands:
   - id: copyconfig
     exec:
       component: udi
-      commandLine: "mkdir /home/user/.continue && cp /projects/devspaces-ai-image/continue-config.json /home/user/.continue/config.json"
+      commandLine: "mkdir /home/user/.continue && cp /projects/agent-on-ocp/continue-config.json /home/user/.continue/config.json"
 events:
   postStart:
-#    - copyconfig
+    - copyconfig
