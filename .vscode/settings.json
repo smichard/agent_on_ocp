@@ -1,6 +1,23 @@
 {
   "window.menuBarVisibility": "visible",
-  "editor.fontSize": 14,
-  "terminal.integrated.fontFamily": "'MesloLGS NF'",
-  "terminal.integrated.fontSize": 14
+  "workbench.startupEditor": "none",
+  "workbench.panel.defaultLocation": "bottom",
+  "terminal.integrated.defaultLocation": "view",
+  "terminal.integrated.fontFamily": "'MesloLGS NF', 'MesloLGS Nerd Font', monospace",
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.profiles.linux": {
+    "zsh": {
+      "path": "/bin/zsh",
+      "args": ["-l"]
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.profiles.osx": {
+    "zsh": {
+      "path": "/bin/zsh",
+      "args": ["-l"]
+    }
+  },
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "continue.enableTabAutocomplete": true
 }
