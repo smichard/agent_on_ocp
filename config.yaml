@@ -102,7 +102,3 @@ docs:
     startUrl: https://docs.redhat.com/en/documentation/openshift_container_platform/
   - name: Red Hat AI Inference Server
     startUrl: https://docs.redhat.com/en/documentation/red_hat_ai_inference_server/
-  - name: vLLM
-    startUrl: https://docs.vllm.ai/
-  - name: Open WebUI
-    startUrl: https://docs.openwebui.com/
