@@ -30,7 +30,7 @@ spec:
             sizeLimit: "16Gi"
       containers:
         - name: vllm
-          image: registry.redhat.io/rhaiis/vllm-cuda-rhel9:latest
+          image: registry.redhat.io/rhaiis/vllm-cuda-rhel9:3.3.1-1775680192
           imagePullPolicy: Always
           env:
             - name: HF_TOKEN
@@ -66,7 +66,7 @@ spec:
             - '--gpu-memory-utilization=0.85'
             - '--max-model-len=65536'
             - '--enable-auto-tool-choice'
-            - '--tool-call-parser=hermes'
+            - '--tool-call-parser=qwen3_coder'
           resources:
             limits:
               cpu: '10'
